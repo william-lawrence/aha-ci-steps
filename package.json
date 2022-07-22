@@ -12,7 +12,6 @@
     "@types/react": "^16.8.0"
   },
   "ahaExtension": {
-    "cspSources": ["https://circleci.com"],
     "contributes": {
       "views": {
         "samplePage": {
@@ -28,6 +27,13 @@
         "sampleCommand": {
           "title": "Sample Command",
           "entryPoint": "src/commands/sampleCommand.js"
+        }
+      },
+      "endpoints": {
+        "circleWebhook": {
+          "entryPoint": "src/endpoints/circleWebhook.js",
+          "public" : true,
+          "title": "circle-webhook"
         }
       }
     }
