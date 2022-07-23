@@ -30,7 +30,8 @@ function getRecentWorkflowData(daysSinceUpdated, callback) {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: "Bearer ",
+      Authorization:
+        "Bearer ",
     },
   })
     .then((response) => response.json())
@@ -43,6 +44,7 @@ function getRecentWorkflowData(daysSinceUpdated, callback) {
 function calculateSuccessRate(workflows, daysSinceUpdated) {
   let successCount = 0;
   let totalWorkflows = workflows.custom_object_records.length;
+
   workflows.custom_object_records.forEach((workflow) => {
     const statusWorkflows = workflow.custom_fields.filter(
       (field) => field.name === "workflow_status" && field.value === "success"
