@@ -42,10 +42,19 @@ function getRecentWorkflowData(daysSinceUpdated, callback) {
 }
 
 function calculateSuccessRate(workflows, daysSinceUpdated) {
-  let successCount = 0;
-  let totalWorkflows = workflows.custom_object_records.length;
+  const dateFilteredWorkflows = filterWorkflowsByDate(
+    workflows,
+    daysSinceUpdated
+  );
 
-  workflows.custom_object_records.forEach((workflow) => {
+  if (dateFilteredWorkflows.length === 0) {
+    return 0;
+  }
+
+  let totalWorkflows = dateFilteredWorkflows.length;
+  let successCount = 0;
+
+  dateFilteredWorkflows.forEach((workflow) => {
     const statusWorkflows = workflow.custom_fields.filter(
       (field) => field.name === "workflow_status" && field.value === "success"
     );
@@ -54,6 +63,17 @@ function calculateSuccessRate(workflows, daysSinceUpdated) {
   });
 
   return (successCount / totalWorkflows) * 100;
+}
+
+function filterWorkflowsByDate(workflows, daysSinceUpdated) {
+  let filterDate = new Date();
+  filterDate.setDate(filterDate.getDate() - daysSinceUpdated);
+
+  const dateFilteredWorkflows = workflows.custom_object_records.filter(
+    (record) => new Date(record.created_at) > filterDate
+  );
+
+  return dateFilteredWorkflows;
 }
 
 function Foo(props) {
