@@ -23,12 +23,6 @@
           }
         }
       },
-      "commands": {
-        "sampleCommand": {
-          "title": "Sample Command",
-          "entryPoint": "src/commands/sampleCommand.js"
-        }
-      },
       "endpoints": {
         "circleWebhook": {
           "entryPoint": "src/endpoints/circleWebhook.js",
