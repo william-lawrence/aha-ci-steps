@@ -21,12 +21,17 @@
           "location": {
             "menu": "Work"
           }
+        },
+        "circleCIDashboardPanel": {
+          "title": "Circle CI dashboard",
+          "entryPoint": "src/views/circleCIDashboardPanel.js",
+          "host": "panel"
         }
       },
       "endpoints": {
         "circleWebhook": {
           "entryPoint": "src/endpoints/circleWebhook.js",
-          "public" : true,
+          "public": true,
           "title": "circle-webhook"
         }
       }
