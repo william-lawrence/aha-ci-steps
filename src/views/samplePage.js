@@ -19,6 +19,36 @@ aha.on("samplePage", ({ fields, onUnmounted }, { identifier, settings }) => {
   return <Foo></Foo>;
 });
 
+function Foo(props) {
+  const [workflows, setWorkflows] = useState(null);
+
+  getRecentWorkflowData(1, setWorkflows);
+
+  let oneDaySuccessRate;
+  let sevenDaySuccessRate;
+  let mostRecentWorkflowStatus;
+
+  if (workflows) {
+    oneDaySuccessRate = calculateSuccessRate(workflows, 1);
+    sevenDaySuccessRate = calculateSuccessRate(workflows, 7);
+    mostRecentWorkflowStatus = getMostRecentWorkflowStatus(workflows);
+  }
+
+  return (
+    <>
+      <Styles />
+      <div className="title">
+        Success rate for the last 24 Hours: {oneDaySuccessRate}%{" "}
+        {mostRecentWorkflowStatus}
+      </div>
+      <div className="title">
+        Success rate for the last 7 Days: {sevenDaySuccessRate}%
+        {mostRecentWorkflowStatus}
+      </div>
+    </>
+  );
+}
+
 function getRecentWorkflowData(daysSinceUpdated, callback) {
   let date = new Date();
   date.setDate(date.getDate() - daysSinceUpdated); // We want to get all the workflows on master for the last N days
@@ -36,7 +66,6 @@ function getRecentWorkflowData(daysSinceUpdated, callback) {
   })
     .then((response) => response.json())
     .then((json) => {
-      console.log(json);
       callback(json);
     });
 }
@@ -62,7 +91,7 @@ function calculateSuccessRate(workflows, daysSinceUpdated) {
     successCount += statusWorkflows.length;
   });
 
-  return (successCount / totalWorkflows) * 100;
+  return Math.round((successCount / totalWorkflows) * 100);
 }
 
 function filterWorkflowsByDate(workflows, daysSinceUpdated) {
@@ -76,29 +105,14 @@ function filterWorkflowsByDate(workflows, daysSinceUpdated) {
   return dateFilteredWorkflows;
 }
 
-function Foo(props) {
-  const [workflows, setWorkflows] = useState(null);
+function getMostRecentWorkflowStatus(workflows) {
+  let dateFilteredWorkflows = filterWorkflowsByDate(workflows, 7);
 
-  getRecentWorkflowData(1, setWorkflows);
+  dateFilteredWorkflows.sort(function (a, b) {
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
 
-  let oneDaySuccessRate;
-  let sevenDaySuccessRate;
-
-  if (workflows) {
-    oneDaySuccessRate = calculateSuccessRate(workflows, 1);
-    sevenDaySuccessRate = calculateSuccessRate(workflows, 7);
-  }
-
-  return (
-    <>
-      <Styles />
-      <div className="title">
-        Success rate for the last 24 Hours: {oneDaySuccessRate}%
-      </div>
-      <div className="title">
-        Success rate for the last 7 Days: {sevenDaySuccessRate}%
-      </div>
-      <div>{getRecentWorkflowData()}</div>
-    </>
-  );
+  return dateFilteredWorkflows[0].custom_fields.find(
+    (field) => field.key === "workflow_status"
+  ).value;
 }

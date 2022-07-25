@@ -25,7 +25,7 @@ aha.on("circleWebhook", ({ headers, payload }, { identifier, settings }) => {
       "Content-Type": "application/json",
       Accept: "application/json",
       Authorization:
-        "Bearer 97758ce3480b077950b0020f7e62aad4e7aa07defbb5357dca6530e6ff5d45a9",
+        "Bearer ",
     },
     body: JSON.stringify(body),
   })
